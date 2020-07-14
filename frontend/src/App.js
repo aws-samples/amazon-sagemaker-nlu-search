@@ -157,7 +157,7 @@ class App extends React.Component {
           </Grid>
           <Grid item xs={10}>
             <Paper className={classes.paper}>
-              <Typography variant="h5">Step 1: Select the number of similar images (K neighbors):</Typography>
+              <Typography variant="h5">Step 1: Select the number of similar products (K neighbors):</Typography>
               <p/>
               <FormControl className={classes.formControl}>
                 <Select
