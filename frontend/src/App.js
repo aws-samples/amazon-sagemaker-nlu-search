@@ -177,7 +177,7 @@ class App extends React.Component {
 
           <Grid item xs={10}>
             <Paper className={classes.paper}>
-            <Typography variant="h5">Step 2: Enter a natural language search query about dresses. Try entering I want a summery dress that's flowery and yellow": </Typography>
+            <Typography variant="h5">Step 2: Enter a natural language search query about dresses. Try entering "I want a summery dress that's flowery and yellow": </Typography>
             <p/>
               <form noValidate autoComplete="off" onSubmit={this.handleSearchSubmit}>
                 <Input
