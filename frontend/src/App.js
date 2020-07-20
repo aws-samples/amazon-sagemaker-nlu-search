@@ -220,7 +220,7 @@ class App extends React.Component {
               <p/>
               <Paper className={classes.paper2}>
                 <Typography variant="h6">KNN Search</Typography>
-                <GridList cellHeight="auto" cols={3}>
+                <GridList cellHeight={200} cols={3}>
                   {this.state.pictures.map((tile) => (
                     <GridListTile key={tile.img} cols={tile.cols || 1}>
                       <img src={tile.img} alt="Similar products..." style={{height:"200px", width: "auto"}} />
