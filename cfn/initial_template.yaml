@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Template to start the nlu search blog
 
-Resources: 
+Resources:
   CodeRepository:
     Type: AWS::SageMaker::CodeRepository
     Properties:
@@ -29,7 +29,7 @@ Resources:
                 Resource:
                   - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*
               - Effect: Allow
-                Action: 
+                Action:
                   - "s3:GetObject"
                   - "s3:PutObject"
                   - "s3:DeleteObject"
@@ -50,7 +50,7 @@ Resources:
               - sagemaker.amazonaws.com
             Action:
               - 'sts:AssumeRole'
-          
+
   s3BucketTraining:
     Type: AWS::S3::Bucket
 
@@ -72,7 +72,7 @@ Resources:
               AWS: !Ref AWS::AccountId
             Action: 'es:*'
             Resource: !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*/*
-      ElasticsearchVersion: 7.4
+      ElasticsearchVersion: 7.7
       ElasticsearchClusterConfig:
         InstanceType: "t2.small.elasticsearch"
       EBSOptions:
@@ -83,7 +83,7 @@ Resources:
 
 Outputs:
   esHostName:
-    Description: Elasticsearch hostname 
+    Description: Elasticsearch hostname
     Value: !GetAtt Domain.DomainEndpoint
 
   esDomainName:
@@ -99,17 +99,17 @@ Outputs:
     Value: !Ref s3BucketHosting
 
   S3BucketSecureURL:
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'https://'
-        - !GetAtt 
+        - !GetAtt
           - s3BucketHosting
           - DomainName
     Description: Name of S3 bucket to hold website content
 
   SageMakerNotebookURL:
     Description: SageMaker Notebook Instance
-    Value: !Join 
+    Value: !Join
       - ''
       - - 'https://console.aws.amazon.com/sagemaker/home?region=us-east-1#/notebook-instances/openNotebook/'
         - !GetAtt NotebookInstance.NotebookInstanceName
