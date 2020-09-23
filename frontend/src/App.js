@@ -152,7 +152,7 @@ class App extends React.Component {
           </Grid> */}
           <Grid item xs={10}>
             <Typography variant="h2" style={{textAlign: "center"}}>
-              AWS KNN-Powered Search
+              AWS Natural Language Search
             </Typography>
           </Grid>
           <Grid item xs={10}>
