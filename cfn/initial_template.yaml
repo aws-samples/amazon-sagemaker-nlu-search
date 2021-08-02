@@ -53,10 +53,23 @@ Resources:
 
   s3BucketTraining:
     Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
+      VersioningConfiguration:
+        Status: Enabled
 
   s3BucketHosting:
     Type: AWS::S3::Bucket
     Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: "AES256"
+      VersioningConfiguration:
+        Status: Enabled
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
