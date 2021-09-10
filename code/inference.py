@@ -24,6 +24,8 @@ def mean_pooling(model_output, attention_mask):
 
 def embed_tformer(model, tokenizer, sentences):
     encoded_input = tokenizer(sentences, padding=True, truncation=True, max_length=256, return_tensors='pt')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    encoded_input.to(device)
 
     #Compute token embeddings
     with torch.no_grad():
@@ -36,13 +38,11 @@ def model_fn(model_dir):
     logger.info('model_fn')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     logger.info(model_dir)
-    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/bert-base-nli-mean-tokens")
-    nlp_model = AutoModel.from_pretrained("sentence-transformers/bert-base-nli-mean-tokens")
+    tokenizer = AutoTokenizer.from_pretrained(model_dir)
+    nlp_model = AutoModel.from_pretrained(model_dir)
     nlp_model.to(device)
     model = {'model':nlp_model, 'tokenizer':tokenizer}
 
-#     model = SentenceTransformer(model_dir + '/transformer/')
-#     logger.info(model)
     return model
 
 # Deserialize the Invoke request body into an object we can perform prediction on
