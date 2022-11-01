@@ -6,7 +6,7 @@ Resources:
     Type: AWS::SageMaker::CodeRepository
     Properties:
       GitConfig:
-          RepositoryUrl: https://github.com/aws-samples/amazon-sagemaker-nlu-search
+          RepositoryUrl: https://github.com/Ariq154404/amazon-sagemaker-nlu-search/tree/movie_db
 
   NotebookInstance:
     Type: AWS::SageMaker::NotebookInstance
