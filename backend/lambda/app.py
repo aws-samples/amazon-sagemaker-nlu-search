@@ -24,23 +24,23 @@ def get_features(sm_runtime_client, sagemaker_endpoint, payload):
 
 
 def get_neighbors(features, es, k_neighbors=3):
-    idx_name = 'idx_zalando'
+    idx_name = 'idx_movie'
     res = es.search(
         request_timeout=30, index=idx_name,
         body={
             'size': k_neighbors,
-            'query': {'knn': {'zalando_nlu_vector': {'vector': features, 'k': k_neighbors}}}}
+            'query': {'knn': {'movie_nlu_vector': {'vector': features, 'k': k_neighbors}}}}
         )
-    s3_uris = [res['hits']['hits'][x]['_source']['image'] for x in range(k_neighbors)]
+    title = [res['hits']['hits'][x]['_source']['title'] for x in range(k_neighbors)]
 
-    return s3_uris
+    return title
 
 
 def es_match_query(payload, es, k=3):
-    idx_name = 'idx_zalando'
+    idx_name = 'idx_movie'
     search_body = {
         "_source": {
-            "excludes": ["zalando_nlu_vector"]
+            "excludes": ["movie_nlu_vector"]
         },
         "highlight": {
             "fields": {
@@ -59,21 +59,21 @@ def es_match_query(payload, es, k=3):
     search_response = es.search(request_timeout=30, index=idx_name,
                                 body=search_body)['hits']['hits'][:k]
 
-    response = [{'image': x['_source']['image'], 'description': x['highlight']['description']} for x in search_response]
+    response = [{'title': x['_source']['title'], 'description': x['highlight']['description']} for x in search_response]
 
     return response
 
 
-def generate_presigned_urls(s3_uris):
-    presigned_urls = [s3_client.generate_presigned_url(
-        'get_object',
-        Params={
-            'Bucket': urlparse(x).netloc,
-            'Key': urlparse(x).path.lstrip('/')},
-        ExpiresIn=300
-    ) for x in s3_uris]
+# def generate_presigned_urls(s3_uris):
+#     presigned_urls = [s3_client.generate_presigned_url(
+#         'get_object',
+#         Params={
+#             'Bucket': urlparse(x).netloc,
+#             'Key': urlparse(x).path.lstrip('/')},
+#         ExpiresIn=300
+#     ) for x in s3_uris]
 
-    return presigned_urls
+#     return presigned_urls
 
 
 def lambda_handler(event, context):
@@ -110,8 +110,8 @@ def lambda_handler(event, context):
 
     if event['path'] == '/postText':
         features = get_features(sm_runtime_client, sagemaker_endpoint, payload)
-        s3_uris_neighbors = get_neighbors(features, es, k_neighbors=k)
-        s3_presigned_urls = generate_presigned_urls(s3_uris_neighbors)
+        titles = get_neighbors(features, es, k_neighbors=k)
+        # titles= generate_presigned_urls(s3_uris_neighbors)
         return {
             "statusCode": 200,
             "headers": {
@@ -120,14 +120,14 @@ def lambda_handler(event, context):
                 "Access-Control-Allow-Methods": "*"
             },
             "body": json.dumps({
-                "images": s3_presigned_urls,
+                "title": titles,
             }),
         }
     else:
         search = es_match_query(payload, es, k)
 
         for i in range(len(search)):
-            search[i]['presigned_url'] = generate_presigned_urls([search[i]['image']])[0]
+            # search[i]['titles'] = generate_presigned_urls([search[i]['image']])[0]
             search[i]['description'] = " ".join(search[i]['description'])
             search[i]['description'] = search[i]['description'].replace("<em>",'<em style="background-color:#f18973;">')
         return {

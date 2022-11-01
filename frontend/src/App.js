@@ -92,9 +92,9 @@ class App extends React.Component {
 
       API.post('NluSearch', '/postText', myInit)
       .then(response => {
-        this.setState({pictures: response.images.map(function(elem) {
+        this.setState({pictures: response.title.map(function(elem) {
           let picture = {};
-          picture.img = elem;
+          picture.title = elem;
           picture.cols = 1;
           return picture;
         })
@@ -113,7 +113,7 @@ class App extends React.Component {
         // this.setState({results: []});
         this.setState({results: response.map(function(elem) {
           let result = {};
-          result.img = elem.presigned_url;
+          result.title = elem.title;
           result.cols = 1;
           result.description = elem.description;
           return result;
@@ -157,7 +157,7 @@ class App extends React.Component {
           </Grid>
           <Grid item xs={10}>
             <Paper className={classes.paper}>
-              <Typography variant="h5">Step 1: Select the number of similar products (K neighbors):</Typography>
+              <Typography variant="h5"> Select the number of similar movies (K neighbors):</Typography>
               <p/>
               <FormControl className={classes.formControl}>
                 <Select
@@ -177,7 +177,7 @@ class App extends React.Component {
 
           <Grid item xs={10}>
             <Paper className={classes.paper}>
-            <Typography variant="h5">Step 2: Enter a natural language search query about dresses. Try entering "I want a summery dress that's flowery and yellow": </Typography>
+            <Typography variant="h5"> Enter a natural language search query about movies. Try entering "I want a halloween movie": </Typography>
             <p/>
               <form noValidate autoComplete="off" onSubmit={this.handleSearchSubmit}>
                 <Input
@@ -208,7 +208,7 @@ class App extends React.Component {
           
           <Grid item xs={10}>
               <Paper className={classes.paper2}>
-                <Typography variant="h5">Step 3: Results!</Typography>
+                <Typography variant="h5"> Results!</Typography>
                 <p/>
                   <BorderLinearProgress
                       variant="determinate"
@@ -222,8 +222,10 @@ class App extends React.Component {
                 <Typography variant="h6">KNN Search</Typography>
                 <GridList cellHeight={200} cols={3}>
                   {this.state.pictures.map((tile) => (
-                    <GridListTile key={tile.img} cols={tile.cols || 1}>
-                      <img src={tile.img} alt="Similar products..." style={{height:"200px", width: "auto"}} />
+                    <GridListTile key={tile.title} cols={tile.cols || 1}>
+                      <Typography>
+                          <p dangerouslySetInnerHTML={createMarkup(tile.title)} />
+                        </Typography>
                     </GridListTile>
                   ))}
                 </GridList>
@@ -234,7 +236,9 @@ class App extends React.Component {
                   <GridList cellHeight={450} cols={3}>
                     {this.state.results.map((tile) => (
                       <Grid item xs={4}>
-                        <img src={tile.img} alt="Similar products..." style={{height:"200px", width: "auto"}} />
+                        <Typography>
+                          <p dangerouslySetInnerHTML={createMarkup(tile.title)} />
+                        </Typography>
                         <Typography>
                           <p dangerouslySetInnerHTML={createMarkup(tile.description)} />
                         </Typography>
